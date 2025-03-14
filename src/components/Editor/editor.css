@@ -1,0 +1,13 @@
+/* Forçar quebra de linha no conteúdo do editor */
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: 100%; /* Garante que o conteúdo não ultrapasse o container */
+  word-wrap: break-word; /* Quebra palavras longas */
+  overflow-wrap: break-word; /* Alternativa moderna para word-wrap */
+}
+
+/* Estilo para parágrafos e cabeçalhos */
+.ce-paragraph {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
