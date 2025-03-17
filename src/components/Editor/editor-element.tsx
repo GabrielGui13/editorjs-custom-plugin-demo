@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import './editor.css';
 import { i18nConfig } from './config/i18n';
+import { parseEditorjsObjectToPlainText, parsePlainTextToEditorjsObject } from '@/utils/editorjs-parsers';
 
 export function EditorElement({ className }: Pick<HTMLDivElement, 'className'>) {
   const editorInstance = useRef<EditorJS>(null);
@@ -11,7 +12,7 @@ export function EditorElement({ className }: Pick<HTMLDivElement, 'className'>) 
   const loadData = async () => {
     const savedData = localStorage.getItem('editorData');
     if (savedData) {
-      const parsedData = JSON.parse(savedData);
+      const parsedData = parsePlainTextToEditorjsObject(savedData);
       if (editorInstance.current) {
         await editorInstance.current.render(parsedData);
         console.log('Dados carregados:', parsedData);
@@ -22,7 +23,10 @@ export function EditorElement({ className }: Pick<HTMLDivElement, 'className'>) 
   const saveData = async () => {
     if (editorInstance.current) {
       const output = await editorInstance.current.save();
-      localStorage.setItem('editorData', JSON.stringify(output));
+
+      const blocksToText = parseEditorjsObjectToPlainText(output)
+      
+      localStorage.setItem('editorData', blocksToText);
       console.log('Dados salvos:', output);
     }
   };

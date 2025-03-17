@@ -6,7 +6,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { API, BlockTool, BlockToolData } from "@editorjs/editorjs";
+import { API, BlockTool, BlockToolConstructorOptions, BlockToolData } from "@editorjs/editorjs";
+import { useState } from "react";
 import { createRoot } from "react-dom/client";
 
 const teams = [
@@ -44,12 +45,8 @@ type Team = {
 }
 
 interface TeamSelectorData extends BlockToolData {
+  selectedTeamId?: string;
   team: Team
-}
-
-interface TeamSelectorParams {
-  data: TeamSelectorData;
-  api: API;
 }
 
 export class TeamSelector implements BlockTool {
@@ -57,30 +54,37 @@ export class TeamSelector implements BlockTool {
   private api: API;
   private wrapper: HTMLElement | null = null;
   
-  constructor({ data, api }: TeamSelectorParams) {    
+  constructor({ data, api }: BlockToolConstructorOptions) {    
     this.data = data;
     this.api = api;
   }
 
   render() {
-    const previousSelectedTeam = this.data.team && teams.find(team => team.id === this.data.team.id);
+    const findCurrentTeam: Team = this.data.team && teams.find(team => team.id === this.data?.team?.id) as Team;
 
-    const handleTeamChange = (value: string) => {
-      this.data.selectedTeam = value;
-    };
+    if (findCurrentTeam) this.data.selectedTeamId = findCurrentTeam.id;
 
-    const Selector = () => (
-      <Select onValueChange={handleTeamChange} value={previousSelectedTeam ? previousSelectedTeam.id : undefined}>
-        <SelectTrigger className="border-0 outline-none shadow-none appearance-none -translate-y-1.25 cursor-pointer text-blue-900 underline font-bold h-0.5 pl-0">
-          <SelectValue placeholder="Selecione a equipe" className="h-0 m-0 bg-none outline-none" />
-        </SelectTrigger>
-        <SelectContent>
-          {teams.map(team => (
-            <SelectItem key={team.id} value={team.id} className="cursor-pointer appearance-none bg-none">{team.name}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    )
+    const Selector = () => {
+      const [teamIdState, setTeamIdState] = useState<string>(findCurrentTeam?.id || '');
+
+      const handleTeamChange = (teamId: string) => {
+        setTeamIdState(teamId)
+        this.data.selectedTeamId = teamId;
+      };
+
+      return (
+        <Select onValueChange={handleTeamChange} value={teamIdState}>
+          <SelectTrigger className="border-0 outline-none shadow-none appearance-none -translate-y-1.25 cursor-pointer text-blue-900 underline font-bold h-0.5 pl-0">
+            <SelectValue placeholder="Selecione a equipe" className="h-0 m-0 bg-none outline-none" />
+          </SelectTrigger>
+          <SelectContent>
+            {teams.map(team => (
+              <SelectItem key={team.id} value={team.id} className="cursor-pointer appearance-none bg-none">{team.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )
+    }
 
     this.wrapper = document.createElement('div');
 
@@ -91,11 +95,17 @@ export class TeamSelector implements BlockTool {
   }
 
   save(): TeamSelectorData {
-    const findTeam: Team = teams.find(team => team.id === this.data.selectedTeam) as Team;
-    
-    return {
-      team: findTeam,
-    };
+    const newTeam: Team = teams.find(team => team.id === this.data.selectedTeamId) as Team;
+
+    if (newTeam) {
+      this.data.team = newTeam;
+      
+      return {
+        team: newTeam,
+      };
+    }
+
+    return this.data
   }
 
   validate(blockData: BlockToolData): boolean {

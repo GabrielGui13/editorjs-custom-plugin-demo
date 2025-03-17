@@ -1,7 +1,7 @@
 import { ToolConstructable, ToolSettings } from "@editorjs/editorjs";
 
-import List from '@editorjs/list'
-import Header from '@editorjs/header'
+// import List from '@editorjs/list'
+// import Header from '@editorjs/header'
 import { TeamSelector } from "../plugins/TeamSelector";
 
 type EditorJsTools = {
@@ -9,7 +9,7 @@ type EditorJsTools = {
 };
 
 export const EDITOR_JS_TOOLS: EditorJsTools = {
-  header: Header,
+  // header: Header,
   teamSelector: TeamSelector,
-  list: List,
+  // list: List,
 }
