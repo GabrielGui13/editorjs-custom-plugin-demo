@@ -20,10 +20,6 @@ export const i18nConfig: I18nConfig = {
         },
       },
     },
-
-    /**
-    * Tradução dos nomes das ferramentas (blocos e ferramentas inline)
-    */
     toolNames: {
       Text: "Texto",
       Heading: "Título",
@@ -43,10 +39,6 @@ export const i18nConfig: I18nConfig = {
       "Ordered List": "Lista ordenada",
       "Unordered List": "Lista não ordenada",
     },
-
-    /**
-    * Tradução para ferramentas específicas
-    */
     tools: {
       warning: {
         Title: "Título",
@@ -60,10 +52,6 @@ export const i18nConfig: I18nConfig = {
           "O bloco não pode ser exibido corretamente.",
       },
     },
-
-    /**
-    * Tradução para ajustes de bloco (Block Tunes)
-    */
     blockTunes: {
       delete: {
         Delete: "Excluir",
